@@ -1,19 +1,26 @@
 const express = require('express');
 const fs = require('fs');
+const morgan = require('morgan');
+
+
 const app = express();
 app.use(express.json());
 app.use(express.text());
-//Creating own middleware
-app.use((req,res,next)=>{ //next can also be written as x or n 
-  console.log("Middleware function is  working");
-  next();
-  }) 
-  app.use((req,res,next)=>{
-    req.sam =new Date().toISOString();
-    req.archit =req.url
-    next();
+app.use(morgan('dev'));
 
-  })
+
+
+//Creating own middleware
+app.use((req, res, next) => {
+  //next can also be written as x or n
+  console.log('Middleware function is  working');
+  next();
+});
+app.use((req, res, next) => {
+  req.sam = new Date().toISOString();
+  req.archit = req.url;
+  next();
+});
 //This is the http request that we want to access
 // app.get('/',(req,res)=>{
 //   res.status(200).json({message:"Hello from the server",app:"Guruji",surnam:"Gaur"},
@@ -33,11 +40,10 @@ const tours = JSON.parse(
 //If not add JSON.parse it will treat data as Buffer and post adding it , converts it into array
 //Refactoring our code it means creating function for all the routes.
 const getAllTours = (req, res) => {
-  
   res.status(200).json({
     status: 'Success',
-    requestdAt:req.sam,
-    name:req.archit,
+    requestdAt: req.sam,
+    name: req.archit,
     results: tours.length,
     data: {
       tours: tours,
@@ -107,17 +113,16 @@ const deleteTour = (req, res) => {
   });
 };
 
-
 //route in node js
 
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
-
 
 app
   .route('/api/v1/tours/:id')
   .get(getTourId)
   .patch(updateTour)
   .delete(deleteTour);
+
 //app.get('/api/v1/tours', getAllTours);
 //Responding to URL parameter
 //app.get('/api/v1/tours/:id', getTourId);
@@ -127,6 +132,7 @@ app
 //app.patch('/api/v1/tours/:id',updateTour)
 //Delete request it is used to remove a particular data from dataset
 //app.delete('/api/v1/tours/:id', deleteTour);
+
 
 const port = 3000;
 app.listen(port, () => {

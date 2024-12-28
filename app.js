@@ -1,15 +1,17 @@
 const express = require('express');
 
 const morgan = require('morgan');
-const tourRouter =require('./routes/tourRoutes.js')
-const userRouter=require('./routes/userRoutes.js')
+const tourRouter = require('./routes/tourRoutes.js');
+const userRouter = require('./routes/userRoutes.js');
 const app = express();
 app.use(express.json());
 app.use(express.text());
-app.use(morgan('dev'));
-app.use(express.static(`${__dirname}/public`))
+app.use(express.static(`${__dirname}/public`));
 
-
+console.log(process.env.NODE_ENV);
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 //Creating own middleware
 app.use((req, res, next) => {
   //next can also be written as x or n
@@ -38,17 +40,16 @@ app.use((req, res, next) => {
 //If not add JSON.parse it will treat data as Buffer and post adding it , converts it into array
 //Refactoring our code it means creating function for all the routes.
 
-//Users Function---------------------------------------------------------------------------------------------------- 
+//Users Function----------------------------------------------------------------------------------------------------
 
 //Creating Router Post defining the router we will replace it with app
 
-//They are now defined in seprate classes 
-app.use('/api/v1/tours',tourRouter);
-app.use('/api/v1/users',userRouter);
+//They are now defined in seprate classes
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 //route in node js
 
-
-//Users Routes 
+//Users Routes
 //app.get('/api/v1/tours', getAllTours);
 //Responding to URL parameter
 //app.get('/api/v1/tours/:id', getTourId);
@@ -61,4 +62,4 @@ app.use('/api/v1/users',userRouter);
 
 //File has been restructed added a controller and router file
 
-module.exports=app;
+module.exports = app;

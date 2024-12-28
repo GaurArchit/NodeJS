@@ -18,7 +18,8 @@ exports.checkID = (req, res, next, id) => {
 };
 
 exports.checkBody = (req, res, next) => {
-  if (!req.body.name || !req.body.price) {
+  const {name,price}=req.body
+  if (!name || !price) {
     return res.status(400).json({
       status: 'fail',
       message: 'Missing name and price',

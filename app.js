@@ -1,13 +1,13 @@
 const express = require('express');
-const fs = require('fs');
+
 const morgan = require('morgan');
-
-
+const tourRouter =require('./routes/tourRoutes.js')
+const userRouter=require('./routes/userRoutes.js')
 const app = express();
 app.use(express.json());
 app.use(express.text());
 app.use(morgan('dev'));
-
+app.use(express.static(`${__dirname}/public`))
 
 
 //Creating own middleware
@@ -34,95 +34,21 @@ app.use((req, res, next) => {
 // })
 
 //handling Get request
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
-);
+
 //If not add JSON.parse it will treat data as Buffer and post adding it , converts it into array
 //Refactoring our code it means creating function for all the routes.
-const getAllTours = (req, res) => {
-  res.status(200).json({
-    status: 'Success',
-    requestdAt: req.sam,
-    name: req.archit,
-    results: tours.length,
-    data: {
-      tours: tours,
-    },
-  });
-};
-const getTourId = (req, res) => {
-  console.log(req.params);
-  //req.param take parameter from the url that is nothing but :id
 
-  const id = req.params.id * 1; //Initally id was string { id: '4' } to this we are doing to convert into number
+//Users Function---------------------------------------------------------------------------------------------------- 
 
-  if (id > tours.length) {
-    //here we are cheking if id is bevond the tours length
-    return res.status(404).send('Failed');
-  }
-  const tour = tours.find((el) => el.id === id);
-  res.status(200).json({
-    status: 'success',
-    data: tour,
-  });
-};
-const createTour = (req, res) => {
-  //console.log(req.body);
-  const newId = tours[tours.length - 1].id + 1;
-  const newTour = Object.assign({ id: newId }, req.body);
-  tours.push(newTour);
-  fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
-    JSON.stringify(tours),
-    (err) => {
-      res.status(201).json({
-        status: 'success',
-        data: {
-          tour: newTour,
-        },
-      });
-    }
-  );
-};
+//Creating Router Post defining the router we will replace it with app
 
-const updateTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID ',
-    });
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: '<Updated tour here>',
-    },
-  });
-};
-
-const deleteTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID ',
-    });
-  }
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-};
-
+//They are now defined in seprate classes 
+app.use('/api/v1/tours',tourRouter);
+app.use('/api/v1/users',userRouter);
 //route in node js
 
-app.route('/api/v1/tours').get(getAllTours).post(createTour);
 
-app
-  .route('/api/v1/tours/:id')
-  .get(getTourId)
-  .patch(updateTour)
-  .delete(deleteTour);
-
+//Users Routes 
 //app.get('/api/v1/tours', getAllTours);
 //Responding to URL parameter
 //app.get('/api/v1/tours/:id', getTourId);
@@ -133,8 +59,6 @@ app
 //Delete request it is used to remove a particular data from dataset
 //app.delete('/api/v1/tours/:id', deleteTour);
 
+//File has been restructed added a controller and router file
 
-const port = 3000;
-app.listen(port, () => {
-  console.log(`App is running on the server${port}...`);
-});
+module.exports=app;

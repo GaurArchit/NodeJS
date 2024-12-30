@@ -13,7 +13,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then((con) => {
-    console.log(con.connection)
+    // console.log(con.connection)
     console.log('Connection Successful');
   });
 
@@ -23,34 +23,7 @@ mongoose
   //   here we can define the table or collection configuration it can be either single line or in detailed as defined here 
 
 
-  const toursSchema =new mongoose.Schema({
-    name:{
-      type:String,
-      required:[true,'A tour must have a price'],
-      unique:true
-    },
-    rating:{
-      type:Number,
-      default:4.5
-    },
-    price:{
-      type:Number,
-      required:[true,'A tour must have a price ']
-    }
-  });
- //Model here we define the table or collection name that is to be used eg here we use Tours here 
-  const Tour =mongoose.model('Tour',toursSchema);
   
-  const testTour =new Tour({
-    name:"Archit Gaur",
-    rating:4.7,
-    price:497
-  })
- //Save method is used to send the data to the table 
-  testTour.save().then((doc)=>{
-    console.log(doc)
-  })
-
 
 const app = require('./app');
 //console.log(process.env);

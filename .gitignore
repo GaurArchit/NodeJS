@@ -1,4 +1,3 @@
 # Ignore environment files
 config.env
-
 node_modules

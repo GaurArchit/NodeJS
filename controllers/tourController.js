@@ -135,7 +135,7 @@ exports.deleteTour = async(req, res) => {
    res.status(200).json({
     status:"success",
     updatedtour:tours,
-    length:tours.length
+    length:tours.length//This is the updated length when 
    })
   }catch(err){
     res.status(404).json({

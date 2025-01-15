@@ -56,7 +56,7 @@ const fs = require('fs');
 
   //   next();
   // };
-
+  
   (exports.getAllTours = async (req, res) => {
     try {
       const tours = await Tour.find(); //find method is used to retieve all the data from backend
@@ -64,6 +64,8 @@ const fs = require('fs');
         status: 'success',
         data: {
           tour: tours,
+          length:tours.length,
+          name:req.archit//This I got from the middleware in app.js class 
         },
       });
     } catch (err) {
@@ -79,6 +81,8 @@ exports.getTourId = async (req, res) => {
     res.status(200).json({
       status: 'Success',
       data: tour,
+      archit
+      
     });
   } catch (err) {
     res.status(404).json({
@@ -103,18 +107,40 @@ exports.getTourId = async (req, res) => {
   // // });
 };
 
-exports.updateTour = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    // data: {
-    //   tour: '<Updated tour here>',
-    // },
-  });
+exports.updateTour = async (req, res) => {
+  try{
+    const tour =await Tour.findByIdAndUpdate(req.params.id,req.body,{
+      new:true,
+      runValidators:true
+    })
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour:tour
+      },
+    });
+  }catch(err){
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+  
 };
 
-exports.deleteTour = (req, res) => {
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
+exports.deleteTour = async(req, res) => {
+  try{
+   const deltours=await Tour.findByIdAndDelete(req.params.id);
+   const tours =await Tour.find();
+   res.status(200).json({
+    status:"success",
+    updatedtour:tours,
+    length:tours.length
+   })
+  }catch(err){
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };

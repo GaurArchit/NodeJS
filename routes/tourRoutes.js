@@ -8,8 +8,7 @@ const tourController = require('./../controllers/tourController.js');
 router
   .route('/')
   .get(tourController.getAllTours)
-  .post( tourController.createTour); //Checkbody is a POST specific middle ware
-
+  .post( tourController.createTour);
 router
   .route('/:id')
   .get(tourController.getTourId)

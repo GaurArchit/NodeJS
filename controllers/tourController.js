@@ -61,15 +61,16 @@ const fs = require('fs');
     try {
       //Build query
       //1).Filtering Normally 
-      const queryObj = { ...req.query };
+      const queryObj = { ...req.query };//This is know as shalow mapping 
       const excludeFields = ['page', 'sort', 'limit', 'fields'];
       excludeFields.forEach((el) => delete queryObj[el]);
-      console.log(req.query, queryObj);
 
-        //2).Advance filtering 
-        
-      const query =  Tour.find(queryObj);
-      
+        //2).Advance filtering in this we will be handling the graterthan and lessthan 
+      let queryStr = JSON.stringify(queryObj);//since here we are taking the req.query therefore will convert it to string 
+      queryStr= queryStr.replace(/\b(gte|gt|lte|lt)\b/g,match=>`$${match}`);//this is the regex expression 
+      console.log(JSON.parse(queryStr));
+
+      const query=Tour.find(JSON.parse(queryStr));
       //Execute the query
       const tours =await query;
       //find method is used to retieve all the data from backend

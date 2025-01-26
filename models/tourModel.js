@@ -49,7 +49,8 @@ const toursSchema = new mongoose.Schema({
   images:[String] ,//Here I am saving the images in form of array 
   createdAt:{
     type:Date,
-    default:Date.now()
+    default:Date.now(),
+    select:false
   },
   startDates:[Date]
 });

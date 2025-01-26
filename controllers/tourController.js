@@ -56,16 +56,32 @@ const fs = require('fs');
 
   //   next();
   // };
-  
+
   (exports.getAllTours = async (req, res) => {
     try {
-      const tours = await Tour.find(); //find method is used to retieve all the data from backend
+      //Build query
+      //1).Filtering Normally 
+      const queryObj = { ...req.query };
+      const excludeFields = ['page', 'sort', 'limit', 'fields'];
+      excludeFields.forEach((el) => delete queryObj[el]);
+      console.log(req.query, queryObj);
+
+        //2).Advance filtering 
+        
+      const query =  Tour.find(queryObj);
+      
+      //Execute the query
+      const tours =await query;
+      //find method is used to retieve all the data from backend
+      //  const tours =await Tour.find().where('duration').equals(5).where('difficulty').equals('easy');
+      //There are some by default mongoose method like where and easy
+      //Responce
       res.status(200).json({
         status: 'success',
         data: {
+          length: tours.length,
           tour: tours,
-          length:tours.length,
-          name:req.archit//This I got from the middleware in app.js class 
+          name: req.archit, //This I got from the middleware in app.js class
         },
       });
     } catch (err) {
@@ -75,14 +91,14 @@ const fs = require('fs');
       });
     }
   });
+
 exports.getTourId = async (req, res) => {
   try {
     const tour = await Tour.findById(req.params.id); //It is used to get only one data based on the id  it is same as //Tours.findOne({_id:req.params.id})
     res.status(200).json({
       status: 'Success',
       data: tour,
-      archit
-      
+      archit,
     });
   } catch (err) {
     res.status(404).json({
@@ -108,36 +124,35 @@ exports.getTourId = async (req, res) => {
 };
 
 exports.updateTour = async (req, res) => {
-  try{
-    const tour =await Tour.findByIdAndUpdate(req.params.id,req.body,{
-      new:true,
-      runValidators:true
-    })
+  try {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
     res.status(200).json({
       status: 'success',
       data: {
-        tour:tour
+        tour: tour,
       },
     });
-  }catch(err){
+  } catch (err) {
     res.status(404).json({
       status: 'fail',
       message: err,
     });
   }
-  
 };
 
-exports.deleteTour = async(req, res) => {
-  try{
-   const deltours=await Tour.findByIdAndDelete(req.params.id);
-   const tours =await Tour.find();
-   res.status(200).json({
-    status:"success",
-    updatedtour:tours,
-    length:tours.length//This is the updated length when 
-   })
-  }catch(err){
+exports.deleteTour = async (req, res) => {
+  try {
+    const deltours = await Tour.findByIdAndDelete(req.params.id);
+    const tours = await Tour.find();
+    res.status(200).json({
+      status: 'success',
+      updatedtour: tours,
+      length: tours.length, //This is the updated length when
+    });
+  } catch (err) {
     res.status(404).json({
       status: 'fail',
       message: err,

@@ -8,7 +8,7 @@ const tourController = require('./../controllers/tourController.js');
 router //Here we added a route path and then added the middleware which would automatically add the query parameters in the url
   .route('/top-5-cheap')
   .get(tourController.aliasTopTours, tourController.getAllTours);
-
+router.route('/tour-stats').get(tourController.getTourStats);
 router
   .route('/')
   .get(tourController.getAllTours)

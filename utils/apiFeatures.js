@@ -22,6 +22,8 @@ class APIFeatures {
       this.query = this.query.find(JSON.parse(queryStr));//here it first create object of mongoose with the help of this.query=Tours.find() , thus now we can add more instuction to it 
      //this line is same as// this.query = Tour.find().find(JSON.parse(queryStr)) =this.query = this.query.find(JSON.parse(queryStr));
       return this;
+      //here query =Tour.find()
+      //queryString=req.query
     }
   
     sort() {
